@@ -1,0 +1,19 @@
+{
+	"triggerProtocol":"amqp-input",
+	"actionProtocol":"",
+	"trigger": {
+		"auth": {
+			"host": "",
+			"port": "",
+			"username": "",
+			"password": ""
+		},
+		"queue":"",
+		"exchange":""
+	},
+	"filter": {},
+	"transformer": {},
+	"action": {},
+	"triggerProtocol": "",
+	"actionProtocol": ""
+}
