@@ -1,6 +1,6 @@
 {
-	"triggerProtocol":"amqp-input",
-	"actionProtocol":"",
+	"triggerProtocol": "amqp-input",
+	"actionProtocol": "outer",
 	"trigger": {
 		"auth": {
 			"host": "",
@@ -8,10 +8,20 @@
 			"username": "",
 			"password": ""
 		},
-		"queue":"",
-		"exchange":""
+		"queue": "",
+		"exchange": "x-a-1"
 	},
-	"filter": {},
+	"filter": [
+		[
+			{
+				"f1": ""
+			},
+			{
+				"f2": ""
+			}
+		],
+		[]
+	],
 	"transformer": {},
 	"action": {},
 	"triggerProtocol": "",

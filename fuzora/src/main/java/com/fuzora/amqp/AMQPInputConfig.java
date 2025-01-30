@@ -5,12 +5,14 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 @Service
-public class AMQPInputConfig implements Function<Map<String, String>, Map<String, String>> {
+public class AMQPInputConfig implements Function<JsonNode, Map<String, String>> {
 
 	@Override
-	public Map<String, String> apply(Map<String, String> t) {
-		
+	public Map<String, String> apply(JsonNode t) {
+
 		return null;
 	}
 

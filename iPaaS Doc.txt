@@ -1,0 +1,64 @@
+-- Sample Config file
+{
+	"triggerProtocol":"amqp-input",
+	"actionProtocol":"",
+	"trigger": {
+		"auth": {
+			"host": "",
+			"port": "",
+			"username": "",
+			"password": ""
+		},
+		"queue":"",
+		"exchange":""
+	},
+	"filter": {},
+	"transformer": {},
+	"action": {},
+	"triggerProtocol": "",
+	"actionProtocol": ""
+}
+
+AMQP Trigger - 
+{ 
+	"auth": {
+			"host": "",
+			"port": "",
+			"username": "",
+			"password": ""
+		},
+		"queue":"",
+		"exchange":""
+}
+
+
+Filter example - 
+	{
+	[{"key1":"value1"},{"key2":"value2"}], // Objects inside array will be considered as OR filter operations
+	[{"key3":"value3"},{"key4":"value4"}]  // Two or Arrays will be considered as AND filter operation among them
+	
+	}
+	
+	
+Trigger Protocol:
+amqp-input
+http-input
+sftp-input
+
+Action Protocol
+amqp-output
+http-output
+sftp-output
+
+
+How to create external input/output
+For Input: Create two services, 
+	1. One for configuration and implement TriggerConfig interface 
+	2. Second for trigger service and implement Trigger Interface
+For Output: Create two services,
+	1. One for configuration and implement ActionConfig interface 
+	2. Second for Action service and implement Action Interface
+For Transformer: Create two services,
+	1. One for configuration and implement TransformerConfig interface 
+	2. Second for Transformer service and implement Transformer Interface
+	
