@@ -1,5 +1,6 @@
 package com.fuzora;
 
+import java.util.HashMap;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +9,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.fuzora.protocol.AMQPService;
+import com.fuzora.amqp.AMQPInput;
 import com.fuzora.reader.ConfigReader;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.fuzora", "com.trigger" })
 public class FuzoraApplication implements CommandLineRunner {
 
-	@Autowired
+	@Autowired(required = false)
 	Function<String, String> transformer;
 
 	public static void main(String[] args) {
@@ -24,14 +25,15 @@ public class FuzoraApplication implements CommandLineRunner {
 
 	@Autowired
 	ConfigReader configReader;
-	
+
 	@Autowired
-	AMQPService amqp;
-	
+	AMQPInput amqpInput;
+
 	@Override
 	public void run(String... args) throws Exception {
 		configReader.readConfigFiles();
-		amqp.accept("");
+
+		amqpInput.accept(new HashMap<>());
 	}
 
 }

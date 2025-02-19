@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fuzora.amqp.AMQPInputConfig;
 import com.fuzora.constants.AppConstants;
 import com.fuzora.external.impl.TriggerConfig;
 import com.fuzora.protocol.configuration.AMQPConfiguration;
@@ -35,6 +38,7 @@ public class ConfigReader implements ApplicationContextAware {
 
 	@Autowired
 	AMQPConfiguration amqpConfiguration;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigReader.class);
 
 	public void readConfigFiles() throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -51,14 +55,20 @@ public class ConfigReader implements ApplicationContextAware {
 	}
 
 	@Autowired(required = false)
-	TriggerConfig triggerConfigg;
+	TriggerConfig externalTriggerConfig;
 
 	private void readAndDeployConfigs() {
-		if (this.triggerConfigg != null)
-			triggerConfigg.apply(null);
-		else
-			System.out.println("It's null");
-//		deployTriggerConfigs(this.triggerConfig);
+		Map<String, Object> retVal = switch (this.triggerProtocol) {
+		case AppConstants.AMQP_INPUT -> {
+			LOGGER.info("Configuring internal trigger service AMQP");
+			AMQPInputConfig aic = this.applicationContext.getBean(AMQPInputConfig.class);
+			yield aic.apply(this.triggerConfig);
+		}
+		default -> {
+			LOGGER.info("Configuring external trigger service AMQP");
+			yield this.externalTriggerConfig.apply(this.triggerConfig);
+		}
+		};
 
 	}
 

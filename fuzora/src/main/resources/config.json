@@ -1,15 +1,16 @@
 {
-	"triggerProtocol": "amqp-input",
+	"triggerProtocol": "amqp_input",
 	"actionProtocol": "outer",
 	"trigger": {
 		"auth": {
-			"host": "",
-			"port": "",
-			"username": "",
-			"password": ""
+			"host": "localhost",
+			"port": "5672",
+			"username": "guest",
+			"password": "guest",
+			"virtualHost":"/"
 		},
-		"queue": "",
-		"exchange": "x-a-1"
+		"queue": "input-101",
+		"exchange": "amq.topic"
 	},
 	"filter": [
 		[
@@ -22,8 +23,5 @@
 		],
 		[]
 	],
-	"transformer": {},
-	"action": {},
-	"triggerProtocol": "",
-	"actionProtocol": ""
+	"transformer": {}
 }
