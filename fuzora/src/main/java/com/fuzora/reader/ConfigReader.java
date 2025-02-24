@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuzora.amqp.AMQPInputConfig;
+import com.fuzora.amqp.AMQPOutput;
+import com.fuzora.amqp.AMQPOutputConfig;
 import com.fuzora.constants.AppConstants;
+import com.fuzora.external.impl.ActionConfig;
 import com.fuzora.external.impl.TriggerConfig;
 import com.fuzora.protocol.configuration.AMQPConfiguration;
 
@@ -50,14 +53,18 @@ public class ConfigReader implements ApplicationContextAware {
 		this.triggerProtocol = configFile.get(AppConstants.T_PROTOCOL).asText();
 		this.actionProtocol = configFile.get(AppConstants.A_PROTOCOL).asText();
 
-		readAndDeployConfigs();
+		deployTriggerConfig();
+		deployActionConfig();
 
 	}
 
 	@Autowired(required = false)
 	TriggerConfig externalTriggerConfig;
 
-	private void readAndDeployConfigs() {
+	@Autowired(required = false)
+	ActionConfig externalActionConfig;
+
+	private Map<String, Object> deployTriggerConfig() {
 		Map<String, Object> retVal = switch (this.triggerProtocol) {
 		case AppConstants.AMQP_INPUT -> {
 			LOGGER.info("Configuring internal trigger service AMQP");
@@ -70,6 +77,22 @@ public class ConfigReader implements ApplicationContextAware {
 		}
 		};
 
+		return retVal;
+	}
+
+	private Map<String, Object> deployActionConfig() {
+		Map<String, Object> retVal = switch (this.actionProtocol) {
+		case AppConstants.AMQP_OUTPUT -> {
+			LOGGER.info("Configuring internal action service AMQP");
+			AMQPOutputConfig aoc = this.applicationContext.getBean(AMQPOutputConfig.class);
+			yield aoc.apply(this.actionConfig);
+		}
+		default -> {
+			LOGGER.info("Configuring external action service AMQP");
+			yield this.externalActionConfig.apply(this.actionConfig);
+		}
+		};
+		return retVal;
 	}
 
 	@SuppressWarnings("unchecked")

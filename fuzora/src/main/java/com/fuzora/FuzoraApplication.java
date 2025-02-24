@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.client.RestTemplate;
 
 import com.fuzora.amqp.AMQPInput;
 import com.fuzora.reader.ConfigReader;
@@ -28,6 +30,11 @@ public class FuzoraApplication implements CommandLineRunner {
 
 	@Autowired
 	AMQPInput amqpInput;
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 
 	@Override
 	public void run(String... args) throws Exception {

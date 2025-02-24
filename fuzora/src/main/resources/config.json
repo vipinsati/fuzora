@@ -1,6 +1,6 @@
 {
 	"triggerProtocol": "amqp_input",
-	"actionProtocol": "outer",
+	"actionProtocol": "amqp_output",
 	"trigger": {
 		"auth": {
 			"host": "localhost",
@@ -10,6 +10,17 @@
 			"virtualHost":"/"
 		},
 		"queue": "input-101",
+		"exchange": "amq.topic"
+	},
+	"action":{
+		"auth": {
+			"host": "localhost",
+			"port": "5672",
+			"username": "guest",
+			"password": "guest",
+			"virtualHost":"/"
+		},
+		"queue": "input-102",
 		"exchange": "amq.topic"
 	},
 	"filter": [
