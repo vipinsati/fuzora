@@ -1,6 +1,7 @@
 package com.fuzora;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 import com.fuzora.amqp.AMQPInput;
+import com.fuzora.amqp.AMQPOutput;
 import com.fuzora.reader.ConfigReader;
+import com.fuzora.workflow.Pipeline2;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.fuzora", "com.trigger" })
@@ -31,6 +34,12 @@ public class FuzoraApplication implements CommandLineRunner {
 	@Autowired
 	AMQPInput amqpInput;
 
+	@Autowired
+	AMQPOutput amqpOutput;
+
+	@Autowired
+	Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
@@ -40,7 +49,9 @@ public class FuzoraApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		configReader.readConfigFiles();
 
-		amqpInput.accept(new HashMap<>());
+		pipeline.setSourceConsumer(amqpInput)
+				.addPipe(amqpOutput); // First step
+		amqpInput.get();
 	}
 
 }
