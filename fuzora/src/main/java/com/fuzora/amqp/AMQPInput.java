@@ -50,7 +50,7 @@ public class AMQPInput implements Supplier<Map<String, Object>> {
 			System.out.println(" [x] Received '" + message + "'");
 			
 			Map<String, Object> ret = new HashMap<>();
-			ret.put("data", message);
+			ret.put("body", message);
 			if (!message.isEmpty()) pipeline.startPipeline(ret);
 		};
 		channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {

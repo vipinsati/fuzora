@@ -1,0 +1,35 @@
+{
+	"triggerProtocol": "http_polling_input",
+	"actionProtocol": "amqp_output",
+	"trigger": {
+		"polling_interval":""
+		"authType":"APIKey/BasicAuth/OAuth"
+		"url":"https://fuzora.free.beeceptor.com",
+		"method":"GET",
+		"body":{},
+		"headers":""
+	},
+	"action":{
+		"auth": {
+			"host": "localhost",
+			"port": "5672",
+			"username": "guest",
+			"password": "guest",
+			"virtualHost":"/"
+		},
+		"queue": "input-102",
+		"exchange": "amq.topic"
+	},
+	"filter": [
+		[
+			{
+				"f1": ""
+			},
+			{
+				"f2": ""
+			}
+		],
+		[]
+	],
+	"transformer": {}
+}
