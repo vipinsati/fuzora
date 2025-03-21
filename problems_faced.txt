@@ -1,0 +1,3 @@
+1 Circular dependency reference:
+	Problem: Create @Bean in the spring starter class. And using it at multiple places.
+	Solution: For all @Bean create a separate @Configuration classes.
