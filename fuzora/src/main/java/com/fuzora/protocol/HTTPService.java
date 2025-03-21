@@ -1,33 +1,39 @@
 package com.fuzora.protocol;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
-public class HTTPService implements Function<JsonNode, Map<String, Object>> {
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-	private final RestTemplate restTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fuzora.protocol.http.HTTPServiceRequest;
+
+@Service
+public class HTTPService implements Function<HTTPServiceRequest, Map<String, Object>> {
+
+	private RestTemplate restTemplate;
 
 	public HTTPService(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
 
 	@Override
-	public Map<String, Object> apply(JsonNode request) {
-		String httpType = request.get("httpType").asText();
-		String url = request.get("url").asText();
-		JsonNode body = request.get("body");
-		JsonNode auth = request.get("auth");
+	public Map<String, Object> apply(HTTPServiceRequest request) {
+		String httpType = request.getRequestMethod();
+		String url = request.getRequestUrl();
+		JsonNode body = (JsonNode) request.getRequestBody();
+		JsonNode auth = request.getAuth();
+		JsonNode headers1 = request.getHeaders();
 		Map<String, String> headersMap = new HashMap<>();
 
-		request.get("headers").fields()
-				.forEachRemaining(entry -> headersMap.put(entry.getKey(), entry.getValue().asText()));
+		if (headers1 != null)
+			headers1.fields().forEachRemaining(entry -> headersMap.put(entry.getKey(), entry.getValue().asText()));
 
 		HttpHeaders headers = new HttpHeaders();
 		headersMap.forEach(headers::set);
@@ -76,8 +82,8 @@ public class HTTPService implements Function<JsonNode, Map<String, Object>> {
 
 	private Map<String, Object> buildResponse(ResponseEntity<JsonNode> response) {
 		Map<String, Object> result = new HashMap<>();
-		result.put("status", response.getStatusCodeValue());
-		result.put("body", response.getBody());
+		result.put("status", response.getStatusCode().value());
+		result.put("body", response.getBody().toString());
 		return result;
 	}
 }

@@ -1,6 +1,5 @@
 package com.fuzora;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -8,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.client.RestTemplate;
 
 import com.fuzora.amqp.AMQPInput;
 import com.fuzora.amqp.AMQPOutput;
+import com.fuzora.http.HttpPollingInput;
 import com.fuzora.reader.ConfigReader;
 import com.fuzora.workflow.Pipeline2;
 
@@ -36,22 +34,20 @@ public class FuzoraApplication implements CommandLineRunner {
 
 	@Autowired
 	AMQPOutput amqpOutput;
+	
+	@Autowired
+	HttpPollingInput httpPollingInput;
 
 	@Autowired
 	Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
-	
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		configReader.readConfigFiles();
 
-		pipeline.setSourceConsumer(amqpInput)
-				.addPipe(amqpOutput); // First step
-		amqpInput.get();
+		pipeline.setSourceConsumer(httpPollingInput)
+				.addPipe(amqpOutput);
+		httpPollingInput.get();
 	}
 
 }

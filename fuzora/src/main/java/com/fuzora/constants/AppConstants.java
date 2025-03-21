@@ -11,6 +11,7 @@ public class AppConstants {
 	public static final String A_PROTOCOL = "actionProtocol";
 
 	public static final String AMQP_INPUT = "amqp_input";
+	public static final String HTTP_POLLING_INPUT = "http_polling_input";
 	public static final String HTTP_INPUT = "http_input";
 	public static final String SFTP_INPUT = "sftp_input";
 

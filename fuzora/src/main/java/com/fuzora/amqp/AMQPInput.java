@@ -22,7 +22,7 @@ public class AMQPInput implements Supplier<Map<String, Object>> {
 
 	@Autowired
 	AMQPInputConfig amqpInputConfig;
-	
+
 	@Autowired
 	Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
 
@@ -47,11 +47,11 @@ public class AMQPInput implements Supplier<Map<String, Object>> {
 
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			String message = new String(delivery.getBody(), "UTF-8");
-			System.out.println(" [x] Received '" + message + "'");
-			
+
 			Map<String, Object> ret = new HashMap<>();
 			ret.put("body", message);
-			if (!message.isEmpty()) pipeline.startPipeline(ret);
+			if (!message.isEmpty())
+				pipeline.startPipeline(ret);
 		};
 		channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
 		});

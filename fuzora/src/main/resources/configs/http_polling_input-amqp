@@ -2,12 +2,13 @@
 	"triggerProtocol": "http_polling_input",
 	"actionProtocol": "amqp_output",
 	"trigger": {
-		"polling_interval":""
+		"polling_interval":10
 		"authType":"APIKey/BasicAuth/OAuth"
 		"url":"https://fuzora.free.beeceptor.com",
 		"method":"GET",
 		"body":{},
-		"headers":""
+		"headers":"",
+		"auth":{}
 	},
 	"action":{
 		"auth": {

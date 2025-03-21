@@ -17,12 +17,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuzora.amqp.AMQPInputConfig;
-import com.fuzora.amqp.AMQPOutput;
 import com.fuzora.amqp.AMQPOutputConfig;
 import com.fuzora.constants.AppConstants;
 import com.fuzora.external.impl.ActionConfig;
 import com.fuzora.external.impl.TriggerConfig;
-import com.fuzora.protocol.configuration.AMQPConfiguration;
+import com.fuzora.http.HttpPollingConfig;
 
 @Service
 public class ConfigReader implements ApplicationContextAware {
@@ -39,8 +38,6 @@ public class ConfigReader implements ApplicationContextAware {
 	private String triggerProtocol;
 	private String actionProtocol;
 
-	@Autowired
-	AMQPConfiguration amqpConfiguration;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigReader.class);
 
 	public void readConfigFiles() throws IOException {
@@ -70,6 +67,11 @@ public class ConfigReader implements ApplicationContextAware {
 			LOGGER.info("Configuring internal trigger service AMQP");
 			AMQPInputConfig aic = this.applicationContext.getBean(AMQPInputConfig.class);
 			yield aic.apply(this.triggerConfig);
+		}
+		case AppConstants.HTTP_POLLING_INPUT -> {
+			LOGGER.info("Configuring internal trigger service HTTP Polling");
+			HttpPollingConfig hpic = this.applicationContext.getBean(HttpPollingConfig.class);
+			yield hpic.apply(this.triggerConfig);
 		}
 		default -> {
 			LOGGER.info("Configuring external trigger service AMQP");

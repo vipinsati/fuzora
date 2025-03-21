@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fuzora.protocol.HTTPService;
+import com.fuzora.protocol.http.HTTPServiceRequest;
 
 import java.util.Base64;
 import java.util.Map;
@@ -21,9 +22,9 @@ public class AuthenticatorService {
 
 	public Map<String, Object> authenticateWithOAuth(String tokenUrl, String clientId, String clientSecret,
 			String grantType, String code, String redirectUri) {
-		ObjectNode requestPayload = objectMapper.createObjectNode();
-		requestPayload.put("url", tokenUrl);
-		requestPayload.put("httpType", "POST");
+		HTTPServiceRequest hsr = new HTTPServiceRequest();
+		hsr.setRequestUrl(redirectUri);
+		hsr.setRequestMethod("POST");
 		ObjectNode body = objectMapper.createObjectNode();
 		body.put("client_id", clientId);
 		body.put("client_secret", clientSecret);
@@ -33,39 +34,41 @@ public class AuthenticatorService {
 			body.put("code", code);
 			body.put("redirect_uri", redirectUri);
 		}
-
-		requestPayload.set("body", body);
-		return httpFunctionService.apply(requestPayload);
+		hsr.setRequestBody(body);
+		return httpFunctionService.apply(hsr);
 	}
 
-	public Map<String, Object> authenticateWithBasicAuth(String url, String username, String password) {
-		ObjectNode requestPayload = objectMapper.createObjectNode();
-		requestPayload.put("url", url);
-		requestPayload.put("httpType", "GET");
+	public Map<String, Object> authenticateWithBasicAuth(String redirectUri, String username, String password) {
+
+		HTTPServiceRequest hsr = new HTTPServiceRequest();
+		hsr.setRequestUrl(redirectUri);
+		hsr.setRequestMethod("GET");
 		ObjectNode headers = objectMapper.createObjectNode();
 		String basicAuth = "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 		headers.put("Authorization", basicAuth);
-		requestPayload.set("headers", headers);
-		return httpFunctionService.apply(requestPayload);
+		hsr.setHeaders(headers);
+
+		return httpFunctionService.apply(hsr);
 	}
 
-	public Map<String, Object> authenticateWithJWT(String url, String jwtToken) {
-		ObjectNode requestPayload = objectMapper.createObjectNode();
-		requestPayload.put("url", url);
-		requestPayload.put("httpType", "GET");
+	public Map<String, Object> authenticateWithJWT(String redirectUri, String jwtToken) {
+		HTTPServiceRequest hsr = new HTTPServiceRequest();
+		hsr.setRequestUrl(redirectUri);
+		hsr.setRequestMethod("GET");
+
 		ObjectNode headers = objectMapper.createObjectNode();
 		headers.put("Authorization", "Bearer " + jwtToken);
-		requestPayload.set("headers", headers);
-		return httpFunctionService.apply(requestPayload);
+		hsr.setHeaders(headers);
+		return httpFunctionService.apply(hsr);
 	}
 
-	public Map<String, Object> authenticateWithApiKey(String url, String apiKeyHeader, String apiKeyValue) {
-		ObjectNode requestPayload = objectMapper.createObjectNode();
-		requestPayload.put("url", url);
-		requestPayload.put("httpType", "GET");
+	public Map<String, Object> authenticateWithApiKey(String redirectUri, String apiKeyHeader, String apiKeyValue) {
+		HTTPServiceRequest hsr = new HTTPServiceRequest();
+		hsr.setRequestUrl(redirectUri);
+		hsr.setRequestMethod("GET");
 		ObjectNode headers = objectMapper.createObjectNode();
 		headers.put(apiKeyHeader, apiKeyValue);
-		requestPayload.set("headers", headers);
-		return httpFunctionService.apply(requestPayload);
+		hsr.setHeaders(headers);
+		return httpFunctionService.apply(hsr);
 	}
 }
