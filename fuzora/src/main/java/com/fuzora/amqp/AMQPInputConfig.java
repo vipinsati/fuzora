@@ -5,14 +5,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fuzora.protocol.RabbitMQService;
 
-@Service
-@Configuration
+@Service("amqp_input_config")
 public class AMQPInputConfig implements Function<JsonNode, Map<String, Object>> {
 
 	@Autowired

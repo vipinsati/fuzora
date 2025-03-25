@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fuzora.protocol.RabbitMQService;
 
-@Service
+@Service("amqp_output_config")
 public class AMQPOutputConfig implements Function<JsonNode, Map<String, Object>> {
 
 	@Autowired

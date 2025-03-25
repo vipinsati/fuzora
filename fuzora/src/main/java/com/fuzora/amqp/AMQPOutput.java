@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.rabbitmq.client.Channel;
 
-@Service
+@Service("amqp_output")
 public class AMQPOutput implements Function<Map<String, Object>, Map<String, Object>> {
 
 	@Autowired

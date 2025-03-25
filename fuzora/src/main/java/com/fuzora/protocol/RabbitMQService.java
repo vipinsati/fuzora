@@ -15,28 +15,9 @@ public class RabbitMQService {
 	private ConnectionFactory connectionFactory;
 	private RabbitTemplate rabbitTemplate;
 
-//    public RabbitMQService() {
-//        this.rabbitMQProperties = loadRabbitMQProperties();
-//        this.connectionFactory = createConnectionFactory();
-//        this.rabbitTemplate = new RabbitTemplate(this.connectionFactory);
-//    }
-//
-//    private RabbitMQProperties loadRabbitMQProperties() {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config/rabbitmq-config.json")) {
-//            if (inputStream == null) {
-//                throw new RuntimeException("RabbitMQ config file not found!");
-//            }
-//            return objectMapper.readValue(inputStream, RabbitMQProperties.class);
-//        } catch (IOException e) {
-//            throw new RuntimeException("Error reading RabbitMQ configuration", e);
-//        }
-//    }
-
 	public void createConnection(String host, int port, String username, String password, String virtualHost) {
 		this.connectionFactory = createConnectionFactory(host, port, username, password, virtualHost);
 		this.rabbitTemplate = new RabbitTemplate(this.connectionFactory);
-
 	}
 
 	private ConnectionFactory createConnectionFactory(String host, int port, String username, String password,

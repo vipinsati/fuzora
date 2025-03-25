@@ -3,10 +3,7 @@ package com.fuzora.amqp;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,7 +14,7 @@ import com.fuzora.workflow.Pipeline2;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
 
-@Service
+@Service("amqp_input")
 public class AMQPInput implements Supplier<Map<String, Object>> {
 
 	@Autowired
@@ -25,16 +22,6 @@ public class AMQPInput implements Supplier<Map<String, Object>> {
 
 	@Autowired
 	Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
-
-//	@Override
-//	public void accept(Map<String, Object> t) {
-//		try {
-//			startListening();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 
 	private void startListening() throws IOException {
 		ConnectionFactory factory = amqpInputConfig.getRabbitMQService().getConnectionFactory();

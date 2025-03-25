@@ -1,4 +1,4 @@
-package com.fuzora.http;
+package com.fuzora.http.polling;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import com.fuzora.http.model.HTTPServiceRequest;
 import com.fuzora.protocol.HTTPService;
-import com.fuzora.protocol.http.HTTPServiceRequest;
 import com.fuzora.workflow.Pipeline2;
 
-@Component
+@Service("http_polling_input")
 public class HttpPollingInput implements Supplier<Map<String, Object>> {
 
 	@Autowired
@@ -41,17 +41,16 @@ public class HttpPollingInput implements Supplier<Map<String, Object>> {
 			hsr.setRequestBody(httpPollingConfig.getBody());
 			hsr.setHeaders(httpPollingConfig.getHeaders());
 			hsr.setAuth(httpPollingConfig.getAuthBody());
-			
-			Map<String, Object> res = httpService.apply(hsr);
-			
-			pipeline.startPipeline(res);
 
+			Map<String, Object> res = httpService.apply(hsr);
+
+			pipeline.startPipeline(res);
 
 		};
 		scheduler.scheduleAtFixedRate(pollingTask, 0, httpPollingConfig.getPollingInterval(), TimeUnit.MINUTES);
 
-		Map<String, Object> reqPam;
-		return null;
+		Map<String, Object> reqPam = null;
+		return reqPam;
 	}
 
 }

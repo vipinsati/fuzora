@@ -1,4 +1,4 @@
-package com.fuzora.protocol.http;
+package com.fuzora.http.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

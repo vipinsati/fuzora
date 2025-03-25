@@ -1,16 +1,15 @@
-package com.fuzora.http;
+package com.fuzora.http.polling;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Component
-public class HttpPollingConfig implements Function<JsonNode, Map<String, Object>> {
+import org.springframework.stereotype.Component;
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+import com.fasterxml.jackson.databind.JsonNode;
+
+@Component("http_polling_input_config")
+public class HttpPollingConfig implements Function<JsonNode, Map<String, Object>> {
 
 	private int pollingInterval;
 	private String authType;

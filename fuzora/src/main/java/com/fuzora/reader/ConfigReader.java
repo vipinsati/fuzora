@@ -2,7 +2,6 @@ package com.fuzora.reader;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import com.fuzora.amqp.AMQPOutputConfig;
 import com.fuzora.constants.AppConstants;
 import com.fuzora.external.impl.ActionConfig;
 import com.fuzora.external.impl.TriggerConfig;
-import com.fuzora.http.HttpPollingConfig;
+import com.fuzora.http.polling.HttpPollingConfig;
 
 @Service
 public class ConfigReader implements ApplicationContextAware {
@@ -97,15 +96,6 @@ public class ConfigReader implements ApplicationContextAware {
 		return retVal;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void deployTriggerConfigs(JsonNode triggerConfig) {
-		// deploy trigger config
-		Function<JsonNode, Map<String, Object>> t_conf_app = (Function<JsonNode, Map<String, Object>>) this.applicationContext
-				.getBean(this.triggerProtocol);
-		t_conf_app.apply(this.triggerConfig);
-
-	}
-
 	public JsonNode getActionConfig() {
 		return actionConfig;
 	}
@@ -120,6 +110,22 @@ public class ConfigReader implements ApplicationContextAware {
 
 	public JsonNode getTriggerConfig() {
 		return triggerConfig;
+	}
+
+	public String getTriggerProtocol() {
+		return triggerProtocol;
+	}
+
+	public void setTriggerProtocol(String triggerProtocol) {
+		this.triggerProtocol = triggerProtocol;
+	}
+
+	public String getActionProtocol() {
+		return actionProtocol;
+	}
+
+	public void setActionProtocol(String actionProtocol) {
+		this.actionProtocol = actionProtocol;
 	}
 
 	private ApplicationContext applicationContext;

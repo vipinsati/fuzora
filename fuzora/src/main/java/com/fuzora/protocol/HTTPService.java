@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fuzora.protocol.http.HTTPServiceRequest;
+import com.fuzora.http.model.HTTPServiceRequest;
 
 @Service
 public class HTTPService implements Function<HTTPServiceRequest, Map<String, Object>> {
