@@ -64,4 +64,4 @@ For Transformer: Create two services,
 	2. Second for Transformer service and implement Transformer Interface
 	
 When running, the library will run all the config implementations first and after that it will run the trigger service which will then 
-receivce the payload and then 
+receivce the payload and then it will send the message received from trigger to subsequent services in the workflow defined.
