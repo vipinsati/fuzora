@@ -1,4 +1,4 @@
-package com.fuzora.http.polling;
+package com.fuzora.protocol.http.polling;
 
 import java.util.HashMap;
 import java.util.Map;

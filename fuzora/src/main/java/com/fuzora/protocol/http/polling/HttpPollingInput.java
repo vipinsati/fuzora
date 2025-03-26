@@ -1,4 +1,4 @@
-package com.fuzora.http.polling;
+package com.fuzora.protocol.http.polling;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fuzora.http.model.HTTPServiceRequest;
-import com.fuzora.protocol.HTTPService;
+import com.fuzora.protocol.http.model.HTTPServiceRequest;
+import com.fuzora.protocol.http.service.HTTPService;
 import com.fuzora.workflow.Pipeline2;
 
 @Service("http_polling_input")

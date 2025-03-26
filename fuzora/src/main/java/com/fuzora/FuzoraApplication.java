@@ -32,3 +32,4 @@ public class FuzoraApplication implements CommandLineRunner {
 	}
 
 }
+ 

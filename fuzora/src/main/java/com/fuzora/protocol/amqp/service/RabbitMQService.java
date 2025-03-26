@@ -1,4 +1,4 @@
-package com.fuzora.protocol;
+package com.fuzora.protocol.amqp.service;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

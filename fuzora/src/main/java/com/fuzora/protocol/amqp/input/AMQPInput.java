@@ -1,4 +1,4 @@
-package com.fuzora.amqp;
+package com.fuzora.protocol.amqp.input;
 
 import java.io.IOException;
 import java.util.HashMap;

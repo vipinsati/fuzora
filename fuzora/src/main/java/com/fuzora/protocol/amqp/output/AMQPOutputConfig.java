@@ -1,4 +1,4 @@
-package com.fuzora.amqp;
+package com.fuzora.protocol.amqp.output;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fuzora.protocol.RabbitMQService;
+import com.fuzora.protocol.amqp.service.RabbitMQService;
 
-@Service("amqp_input_config")
-public class AMQPInputConfig implements Function<JsonNode, Map<String, Object>> {
+@Service("amqp_output_config")
+public class AMQPOutputConfig implements Function<JsonNode, Map<String, Object>> {
 
 	@Autowired
 	RabbitMQService rabbitMQService;
@@ -22,7 +22,6 @@ public class AMQPInputConfig implements Function<JsonNode, Map<String, Object>> 
 
 	@Override
 	public Map<String, Object> apply(JsonNode inputConfigData) {
-
 		Map<String, Object> returnStatus = new HashMap<>();
 
 		auth = inputConfigData.get("auth");
@@ -35,6 +34,7 @@ public class AMQPInputConfig implements Function<JsonNode, Map<String, Object>> 
 		returnStatus.put("status", "ok");
 		returnStatus.put("data", "");
 		return returnStatus;
+
 	}
 
 	public RabbitMQService getRabbitMQService() {

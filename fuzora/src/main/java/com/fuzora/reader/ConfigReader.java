@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fuzora.amqp.AMQPInputConfig;
-import com.fuzora.amqp.AMQPOutputConfig;
 import com.fuzora.constants.AppConstants;
 import com.fuzora.external.impl.ActionConfig;
 import com.fuzora.external.impl.TriggerConfig;
-import com.fuzora.http.polling.HttpPollingConfig;
+import com.fuzora.protocol.amqp.input.AMQPInputConfig;
+import com.fuzora.protocol.amqp.output.AMQPOutputConfig;
+import com.fuzora.protocol.http.polling.HttpPollingConfig;
 
 @Service
 public class ConfigReader implements ApplicationContextAware {

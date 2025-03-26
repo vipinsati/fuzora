@@ -1,4 +1,4 @@
-package com.fuzora.protocol;
+package com.fuzora.protocol.http.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fuzora.http.model.HTTPServiceRequest;
+import com.fuzora.protocol.http.model.HTTPServiceRequest;
 
 @Service
 public class HTTPService implements Function<HTTPServiceRequest, Map<String, Object>> {

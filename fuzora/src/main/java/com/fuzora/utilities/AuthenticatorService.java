@@ -3,8 +3,8 @@ package com.fuzora.utilities;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuzora.http.model.HTTPServiceRequest;
-import com.fuzora.protocol.HTTPService;
+import com.fuzora.protocol.http.model.HTTPServiceRequest;
+import com.fuzora.protocol.http.service.HTTPService;
 
 import java.util.Base64;
 import java.util.Map;
