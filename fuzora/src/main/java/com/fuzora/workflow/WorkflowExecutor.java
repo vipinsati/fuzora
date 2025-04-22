@@ -20,7 +20,7 @@ public class WorkflowExecutor implements ApplicationContextAware {
 	private ConfigReader configReader;
 
 	@Autowired
-	private Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
+	private Pipeline<Map<String, Object>, Map<String, Object>> pipeline;
 
 	public WorkflowExecutor(ConfigReader configReader) {
 		this.configReader = configReader;

@@ -10,7 +10,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fuzora.workflow.Pipeline2;
+import com.fuzora.workflow.Pipeline;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
 
@@ -21,7 +21,7 @@ public class AMQPInput implements Supplier<Map<String, Object>> {
 	AMQPInputConfig amqpInputConfig;
 
 	@Autowired
-	Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
+	Pipeline<Map<String, Object>, Map<String, Object>> pipeline;
 
 	private void startListening() throws IOException {
 		ConnectionFactory factory = amqpInputConfig.getRabbitMQService().getConnectionFactory();

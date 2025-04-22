@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.fuzora.protocol.http.model.HTTPServiceRequest;
 import com.fuzora.protocol.http.service.HTTPService;
-import com.fuzora.workflow.Pipeline2;
+import com.fuzora.workflow.Pipeline;
 
 @Service("http_polling_input")
 public class HttpPollingInput implements Supplier<Map<String, Object>> {
 
 	@Autowired
-	private Pipeline2<Map<String, Object>, Map<String, Object>> pipeline;
+	private Pipeline<Map<String, Object>, Map<String, Object>> pipeline;
 
 	@Autowired
 	HTTPService httpService;

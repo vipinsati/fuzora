@@ -1,9 +1,12 @@
 package com.fuzora.protocol.http.service;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +26,8 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 		this.restTemplate = restTemplate;
 	}
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HTTPService.class);
+
 	@Override
 	public Map<String, Object> apply(HTTPServiceRequest request) {
 		String httpType = request.getRequestMethod();
@@ -38,9 +43,11 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 		HttpHeaders headers = new HttpHeaders();
 		headersMap.forEach(headers::set);
 
-		if (auth != null && auth.has("token")) {
-			headers.set("Authorization", "Bearer " + auth.get("token").asText());
-		}
+		headers = decorateWithAuth(headers, auth);
+
+//		if (auth != null && auth.has("token")) {
+//			headers.set("Authorization", "Bearer " + auth.get("token").asText());
+//		}
 
 		switch (httpType.toUpperCase()) {
 		case "GET":
@@ -85,5 +92,22 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 		result.put("status", response.getStatusCode().value());
 		result.put("body", response.getBody().toString());
 		return result;
+	}
+
+	private HttpHeaders decorateWithAuth(HttpHeaders headers, JsonNode auth) {
+		switch (auth.get("authType").asText()) {
+		case "oauth":
+			headers.set("Authorization", "Bearer " + auth.get("token").asText());
+			break;
+		case "basic":
+			String username = auth.get("username").asText();
+			String pwd = auth.get("password").asText();
+			String basicAuth = "Basic " + Base64.getEncoder().encodeToString((username + ":" + pwd).getBytes());
+			headers.set("Authorization", basicAuth);
+			break;
+		default:
+			LOGGER.warn("Unknow auth type encountered. Setting nothing to headers.");
+		}
+		return headers;
 	}
 }

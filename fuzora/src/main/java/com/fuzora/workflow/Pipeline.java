@@ -4,38 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
-public class Pipeline<I, O> {
-	private final List<Function<?, ?>> steps = new ArrayList<>();
-	private Supplier<?> sourcePipe = null;
+import org.springframework.stereotype.Service;
 
-	public <T> Pipeline<I, T> addStep(Function<O, T> step) {
-		steps.add(step);
-		return (Pipeline<I, T>) this;
-	}
+@Service("pipline")
+public class Pipeline<T, R> {
 
-	public <R> Pipeline<I, O> addSourcePipe(Supplier<R> sourcePipe) {
-		this.sourcePipe = sourcePipe;
+	private Supplier<T> sourceConsumer;
+
+	private final List<Function<?, ?>> pipes = new ArrayList<>();
+
+	public Pipeline<T, R> setSourceConsumer(Supplier<T> sourceConsumer) {
+		this.sourceConsumer = sourceConsumer;
 		return this;
 	}
 
-	public O execute(I input) throws Exception {
-		Object result = input;
-
-		if (sourcePipe != null) {
-			result = sourcePipe.get();
-		}
-
-		for (Function step : steps) {
-			try {
-				result = step.apply(result);
-			} catch (Exception e) {
-				System.err.println("Pipeline execution failed at step: " + step.getClass().getSimpleName());
-				throw e; // Stop execution on failure
-			}
-		}
-		return (O) result;
+	public <X, Y> Pipeline<T, R> addPipe(Function<X, Y> pipe) {
+		pipes.add(pipe);
+		return this;
 	}
 
+	@SuppressWarnings("unchecked")
+	public void startPipeline(T input) {
+		Object data = input;
+		// Process through function pipes
+		for (Function<?, ?> pipe : pipes) {
+			data = ((Function<Object, Object>) pipe).apply(data);
+		}
+	}
 }
