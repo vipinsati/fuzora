@@ -23,7 +23,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       maxAge: 60 * 60 * 24 // 1 day
     }))
 
-    return res.status(200).json({ message: 'Login successful' });
+    return res.status(200).json({ message: 'Login successful', userId: 'abc' });
   }
 
   return res.status(401).json({ message: 'Invalid email or password' });

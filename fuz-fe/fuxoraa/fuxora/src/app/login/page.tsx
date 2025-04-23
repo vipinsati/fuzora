@@ -38,9 +38,10 @@ export default function LoginPage() {
     });
 
     setLoading(false);
-
+    const data = await res.json();
     if (res.ok) {
-      router.push('/dashboard');
+       const userId = data.userId;
+      router.push(`/dashboard/${userId}`);
     } else {
       const data = await res.json();
       setError(data.message || 'Login failed');
