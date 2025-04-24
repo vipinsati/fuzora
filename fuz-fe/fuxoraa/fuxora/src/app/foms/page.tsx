@@ -12,23 +12,32 @@ import { Button } from '@mui/material';
 const schema = {
   type: 'object',
   properties: {
-    name: { type: 'string' },
-    age: { type: 'number' },
+    flow_name: { type: 'string', minLength: 3, description: 'Enter flow name' },
   },
-  required: ['name']
+  required: ['flow_name']
 };
 
 const uischema = {
-  type: 'VerticalLayout',
+  type: 'Categorization',
   elements: [
-    { type: 'Control', scope: '#/properties/name' },
-    { type: 'Control', scope: '#/properties/age' }
-  ]
+    {
+      type: 'Category',
+      label: 'Flow Information',
+      elements: [{
+        "type": "Control",
+        "scope": "#/properties/flow_name"
+      }]
+    }
+  ],
+  options: {
+    variant: "stepper",
+    showNavButtons: true
+  }
 };
 
 export default function JsonSchemaForm() {
   const [data, setData] = useState({});
-
+  // setData({name:'vipin',age:24});
   return (
     <div className="bg-white p-4 rounded shadow-md">
       <JsonForms

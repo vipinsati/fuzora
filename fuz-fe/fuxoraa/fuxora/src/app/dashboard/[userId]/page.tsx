@@ -1,20 +1,16 @@
-// import  JSONSchemaForm from '../foms/page'
-// export default function DashboardPage() {
-//     return (
-//         <main className="h-screen flex items-center justify-center bg-white font-bold">
-//             {/* <h1 className="text-2xl font-bold">Welcome to the Dashboard 🎉</h1> */}
-//             <JSONSchemaForm />
-//         </main>
-//     );
-// }
-
 'use client';
 
-import { useState } from 'react';
-import JSONSchemaForm from '../../foms/page';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';
+import Avatar from '../../components/Avatar';
+// import JSONSchemaForm from '../../foms/page';
+// import Image from 'next/image';
 
-type Section = 'forms' | 'integrations' | 'settings';
+import NewIntegrationView from '../../components/NewIntegrationView';
+import IntegrationsView from '../../components/IntegrationsView';
+import SettingsView from '../../components/SettingsView';
+
+// type Section = 'forms' | 'integrations' | 'settings';
+type View = 'new' | 'saved' | 'settings';
 function Logo() {
     return (
         <div className="text-white font-bold text-xl">
@@ -26,7 +22,19 @@ function Logo() {
 
 function ProfileMenu() {
     const [open, setOpen,] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="relative">
@@ -34,13 +42,14 @@ function ProfileMenu() {
                 onClick={() => setOpen(!open)}
                 className="flex items-center space-x-2 text-white focus:outline-none cursor-pointer"
             >
-                <Image
+                {/* <Image
                     src="/profile.jpg" // Replace with actual profile image path
                     alt="Profile"
                     width={32}
                     height={32}
                     className="rounded-full"
-                />
+                /> */}
+                <Avatar name='Vipin Sati' />
                 <span className="text-sm font-medium">John Doe</span>
             </button>
 
@@ -73,21 +82,21 @@ function ProfileMenu() {
 }
 
 export default function DashboardPage() {
-    const [showForm, setShowForm,] = useState(false);
-    const [section, setSection] = useState<Section>('forms');
+    // const [showForm, setShowForm,] = useState(false);
+    const [activeView, setActiveView] = useState<View>('new');
+    const [collapsed, setCollapsed] = useState(false);
 
-    const renderSection = () => {
-        switch (section) {
-          case 'forms':
-            return <FormsView />;
-          case 'integrations':
-            return <IntegrationsView />;
-          case 'settings':
-            return <SettingsView />;
-          default:
-            return null;
+    const renderContent = () => {
+        console.log(activeView)
+        switch (activeView) {
+            case 'new':
+                return <NewIntegrationView />;
+            case 'saved':
+                return <IntegrationsView />;
+            case 'settings':
+                return <SettingsView />;
         }
-      };
+    };
 
     return (
         <div className="h-screen flex flex-col">
@@ -99,17 +108,26 @@ export default function DashboardPage() {
 
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-64 bg-gray-100 border-r p-4 space-y-4">
-                    {/* <div className="text-sm font-semibold text-gray-700">Navigation</div> */}
-                    <ul className="space-y-5">
-                        <li className="hover:text-gray-800 hover:bg-gray-200 cursor-pointer p-3 m-0">New Integration</li>
-                        <li className="hover:text-gray-800 hover:bg-gray-200 cursor-pointer p-3 m-0">Integrations</li>
-                        <li className="hover:text-gray-800 hover:bg-gray-200 cursor-pointer p-3 m-0">Integration Settings</li>
-                    </ul>
+                <aside className={`bg-gray-100 transition-all duration-300 ${collapsed ? 'w-16' : 'w-64'} p-4`}>
+                    <button onClick={() => setCollapsed(!collapsed)} className="mb-4">
+                        {collapsed ? '➡️' : '⬅️ Collapse'}
+                    </button>
+
+                    <nav className="space-y-2">
+                        <button onClick={() => setActiveView('new')} className="block w-full text-left hover:font-semibold">
+                            🆕 {!collapsed && 'New Integration'}
+                        </button>
+                        <button onClick={() => setActiveView('saved')} className="block w-full text-left hover:font-semibold">
+                            📁 {!collapsed && 'Integrations'}
+                        </button>
+                        <button onClick={() => setActiveView('settings')} className="block w-full text-left hover:font-semibold">
+                            ⚙️ {!collapsed && 'Settings'}
+                        </button>
+                    </nav>
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto p-6 bg-white">
+                {/* <main className="flex-1 overflow-auto p-6 bg-white">
                     <button
                         onClick={() => setShowForm(true)}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
@@ -124,6 +142,13 @@ export default function DashboardPage() {
                             </div>
                         )
                     }
+                </main> */}
+                <main className="flex-1 p-6 overflow-auto bg-white">
+                    <header className="mb-4 border-b pb-2 flex justify-between items-center">
+                        <h1 className="text-xl font-bold">Dashboard</h1>
+                        {/* <div className="text-sm text-gray-500">User: {userId}</div> */}
+                    </header>
+                    {renderContent()}
                 </main>
             </div>
         </div>
