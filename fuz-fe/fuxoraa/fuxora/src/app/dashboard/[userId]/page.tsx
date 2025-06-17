@@ -1,13 +1,18 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Avatar from '../../components/Avatar';
+import { useState } from 'react';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+// import Avatar from '../../components/Avatar';
+import Avatar from '@mui/material/Avatar'
 // import JSONSchemaForm from '../../foms/page';
 // import Image from 'next/image';
 
 import NewIntegrationView from '../../components/NewIntegrationView';
 import IntegrationsView from '../../components/IntegrationsView';
 import SettingsView from '../../components/SettingsView';
+import { yellow } from '@mui/material/colors';
 
 // type Section = 'forms' | 'integrations' | 'settings';
 type View = 'new' | 'saved' | 'settings';
@@ -20,63 +25,112 @@ function Logo() {
     );
 }
 
-function ProfileMenu() {
-    const [open, setOpen,] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
+// function ProfileMenu() {
+//     const [open, setOpen,] = useState(false);
+//     const menuRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setOpen(false);
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+//     useEffect(() => {
+//         function handleClickOutside(event: MouseEvent) {
+//             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+//                 setOpen(false);
+//             }
+//         }
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => {
+//             document.removeEventListener('mousedown', handleClickOutside);
+//         };
+//     }, []);
+
+//     return (
+//         <div className="relative">
+//             <button
+//                 onClick={() => setOpen(!open)}
+//                 className="flex items-center space-x-2 text-white focus:outline-none cursor-pointer"
+//             >
+//                 {/* <Image
+//                     src="/profile.jpg" // Replace with actual profile image path
+//                     alt="Profile"
+//                     width={32}
+//                     height={32}
+//                     className="rounded-full"
+//                 /> */}
+//                 <Avatar name='Vipin Sati' />
+//                 <span className="text-sm font-medium">John Doe</span>
+//             </button>
+
+//             {open && (
+//                 <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-50 cursor-pointer">
+//                     <ul className="text-sm text-gray-700">
+//                         <li
+//                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+//                             onClick={() => alert('Settings View')}
+//                         >
+//                             Settings
+//                         </li>
+//                         <li
+//                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+//                             onClick={() => alert('Profile View')}
+//                         >
+//                             Profile
+//                         </li>
+//                         <li
+//                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
+//                             onClick={() => alert('Signing out...')}
+//                         >
+//                             Sign out
+//                         </li>
+//                     </ul>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// }
+
+function ProfileMenu() {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
-        <div className="relative">
-            <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center space-x-2 text-white focus:outline-none cursor-pointer"
+        <div>
+            <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
+                <Avatar sx={{bgcolor:yellow[800]}}>VS</Avatar>
+                <span className="ml-2 text-sm font-medium text-white hidden sm:inline">John Doe</span>
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                    elevation: 2,
+                    sx: {
+                        mt: 1.5,
+                        minWidth: 180,
+                    },
+                }}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
             >
-                {/* <Image
-                    src="/profile.jpg" // Replace with actual profile image path
-                    alt="Profile"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                /> */}
-                <Avatar name='Vipin Sati' />
-                <span className="text-sm font-medium">John Doe</span>
-            </button>
-
-            {open && (
-                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-50 cursor-pointer">
-                    <ul className="text-sm text-gray-700">
-                        <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => alert('Settings View')}
-                        >
-                            Settings
-                        </li>
-                        <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => alert('Profile View')}
-                        >
-                            Profile
-                        </li>
-                        <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
-                            onClick={() => alert('Signing out...')}
-                        >
-                            Sign out
-                        </li>
-                    </ul>
-                </div>
-            )}
+                <MenuItem onClick={() => alert('Settings View')}>Settings</MenuItem>
+                <MenuItem onClick={() => alert('Profile View')}>Profile</MenuItem>
+                <MenuItem onClick={() => alert('Signing out...')} sx={{ color: 'red' }}>
+                    Sign out
+                </MenuItem>
+            </Menu>
         </div>
     );
 }
@@ -144,10 +198,10 @@ export default function DashboardPage() {
                     }
                 </main> */}
                 <main className="flex-1 p-6 overflow-auto bg-white">
-                    <header className="mb-4 border-b pb-2 flex justify-between items-center">
-                        <h1 className="text-xl font-bold">Dashboard</h1>
+                    {/* <header className="mb-4 border-b pb-2 flex justify-between items-center"> */}
+                        {/* <h1 className="text-xl font-bold">Dashboard</h1> */}
                         {/* <div className="text-sm text-gray-500">User: {userId}</div> */}
-                    </header>
+                    {/* </header> */}
                     {renderContent()}
                 </main>
             </div>

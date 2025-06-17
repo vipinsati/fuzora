@@ -1,36 +1,48 @@
 {
-	"triggerProtocol": "http_polling_input",
-	"actionProtocol": "amqp_output",
-	"trigger": {
-		"polling_interval":10
-		"authType":"APIKey/BasicAuth/OAuth"
-		"url":"https://fuzora.free.beeceptor.com",
-		"method":"GET",
-		"body":{},
-		"headers":"",
-		"auth":{}
-	},
-	"action":{
-		"auth": {
-			"host": "localhost",
-			"port": "5672",
-			"username": "guest",
-			"password": "guest",
-			"virtualHost":"/"
-		},
-		"queue": "input-102",
-		"exchange": "amq.topic"
-	},
-	"filter": [
-		[
-			{
-				"f1": ""
-			},
-			{
-				"f2": ""
-			}
-		],
-		[]
-	],
-	"transformer": {}
+  "triggerProtocol": "http_polling_input",
+  "actionProtocol": "amqp_output",
+  "trigger": {
+    "polling_interval": 1,
+    "url": "https://fuzora.free.beeceptor.com",
+    "method": "GET",
+    "auth": {
+      "authType": "OAuth",
+      "access_token": "",
+      "expires_in": 3599,
+      "refresh_token": "",
+      "scope": "https://mail.google.com/",
+      "token_type": "Bearer",
+      "refresh_token_expires_in": 604799
+    }
+  },
+  "action": {
+    "auth": {
+      "host": "localhost",
+      "port": "5672",
+      "username": "guest",
+      "password": "guest",
+      "virtualHost": "/"
+    },
+    "queue": "input-102",
+    "exchange": "amq.topic"
+  },
+  "filter": [
+    [
+      {
+        "keyFromTrigger": "subject/age",
+        "dataType": "string/number",
+        "operation": "equals,contains,startswith, endswith/equal,greaterThan,lessThan",
+        "matches": "contains,resume/equal,22"
+      },
+      {
+        "f2": ""
+      }
+    ],
+    []
+  ],
+  "transformer": [{
+	"keyFromTrigger":"",
+	"keyToAction":"",
+	"dataType":""
+  }]
 }

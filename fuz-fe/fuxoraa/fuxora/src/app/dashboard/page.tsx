@@ -11,7 +11,7 @@
 'use client';
 
 import { useState } from 'react';
-import JSONSchemaForm from '../foms/page';
+import JSONSchemaForm from '../forms/page';
 import Image from 'next/image';
 
 function Logo() {
