@@ -1,6 +1,7 @@
 package com.fuzora.filter;
 
-//FilterNode.java (interface)
+import com.fasterxml.jackson.databind.JsonNode;
+
 public interface FilterNode {
-	boolean evaluate(com.fasterxml.jackson.databind.JsonNode data);
+    FilterResult evaluate(JsonNode data);
 }

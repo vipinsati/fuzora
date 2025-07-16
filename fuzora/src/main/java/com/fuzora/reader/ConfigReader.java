@@ -18,6 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuzora.constants.AppConstants;
 import com.fuzora.external.impl.ActionConfig;
 import com.fuzora.external.impl.TriggerConfig;
+import com.fuzora.filter.FilterConfiguration;
+import com.fuzora.pipeline.DataHandler;
+import com.fuzora.pipeline.PipelineRunner;
 import com.fuzora.protocol.amqp.input.AMQPInputConfig;
 import com.fuzora.protocol.amqp.output.AMQPOutputConfig;
 import com.fuzora.protocol.http.polling.HttpPollingConfig;
@@ -28,12 +31,16 @@ public class ConfigReader implements ApplicationContextAware {
 	@Value("classpath:config.json")
 	private Resource jsonResource;
 
+	@Autowired
+	PipelineRunner pipeline;
+
 	private JsonNode configFile;
 
 	private JsonNode triggerConfig;
 	private JsonNode filterConfig;
 	private JsonNode transformerConfig;
 	private JsonNode actionConfig;
+
 	private String triggerProtocol;
 	private String actionProtocol;
 
@@ -51,6 +58,17 @@ public class ConfigReader implements ApplicationContextAware {
 
 		deployTriggerConfig();
 		deployActionConfig();
+		deployFilterConfig();
+
+		setupPipeline();
+
+	}
+
+	private void setupPipeline() {
+		DataHandler filterHandler = (DataHandler) this.applicationContext.getBean("filterService");
+		DataHandler transformHandler = (DataHandler) this.applicationContext.getBean("transformService");
+		DataHandler actionHandler = (DataHandler) this.applicationContext.getBean("amqp_output");
+		pipeline.setup(filterHandler, transformHandler, actionHandler);
 
 	}
 
@@ -79,6 +97,10 @@ public class ConfigReader implements ApplicationContextAware {
 		};
 
 		return retVal;
+	}
+
+	private Map<String, Object> deployFilterConfig() {
+		return this.applicationContext.getBean(FilterConfiguration.class).apply(this.filterConfig);
 	}
 
 	private Map<String, Object> deployActionConfig() {

@@ -1,6 +1,7 @@
 package com.fuzora.constants;
 
 public class AppConstants {
+	private AppConstants() {}
 
 	public static final String TRIGGER = "trigger";
 	public static final String FILTER = "filter";

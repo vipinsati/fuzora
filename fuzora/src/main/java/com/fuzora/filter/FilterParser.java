@@ -8,7 +8,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class FilterParser {
 
-	public static FilterNode parse(JsonNode node) {
+	private FilterParser() {
+	}
+
+	public static FilterNode parse(JsonNode node) throws Exception {
 		if (node.has("AND") || node.has("OR")) {
 			FilterGroup group = new FilterGroup();
 			String key = node.has("AND") ? "AND" : "OR";

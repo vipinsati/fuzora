@@ -6,21 +6,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fuzora.pipeline.PipelineRunner;
 import com.fuzora.protocol.http.model.HTTPServiceRequest;
 import com.fuzora.protocol.http.service.HTTPService;
-import com.fuzora.workflow.Pipeline;
 
 @Service("http_polling_input")
 public class HttpPollingInput implements Supplier<Map<String, Object>> {
 
-	@Autowired
-	private Pipeline<Map<String, Object>, Map<String, Object>> pipeline;
+	private HTTPService httpService;
 
-	@Autowired
-	HTTPService httpService;
+	public HttpPollingInput(HTTPService httpService) {
+		this.httpService = httpService;
+	}
+
+	private PipelineRunner runner;
 
 	private HttpPollingConfig httpPollingConfig;
 
@@ -44,7 +45,7 @@ public class HttpPollingInput implements Supplier<Map<String, Object>> {
 
 			Map<String, Object> res = httpService.apply(hsr);
 
-			pipeline.startPipeline(res);
+			runner.runPipeline((String) res.get("body"));
 
 		};
 		scheduler.scheduleAtFixedRate(pollingTask, 0, httpPollingConfig.getPollingInterval(), TimeUnit.MINUTES);

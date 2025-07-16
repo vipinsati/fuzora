@@ -43,11 +43,7 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 		HttpHeaders headers = new HttpHeaders();
 		headersMap.forEach(headers::set);
 
-		headers = decorateWithAuth(headers, auth);
-
-//		if (auth != null && auth.has("token")) {
-//			headers.set("Authorization", "Bearer " + auth.get("token").asText());
-//		}
+		decorateWithAuth(headers, auth);
 
 		switch (httpType.toUpperCase()) {
 		case "GET":
@@ -90,11 +86,11 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 	private Map<String, Object> buildResponse(ResponseEntity<JsonNode> response) {
 		Map<String, Object> result = new HashMap<>();
 		result.put("status", response.getStatusCode().value());
-		result.put("body", response.getBody().toString());
+		result.put("body", response.hasBody() ? response.getBody().toString() : "");
 		return result;
 	}
 
-	private HttpHeaders decorateWithAuth(HttpHeaders headers, JsonNode auth) {
+	private void decorateWithAuth(HttpHeaders headers, JsonNode auth) {
 		switch (auth.get("authType").asText()) {
 		case "oauth":
 			headers.set("Authorization", "Bearer " + auth.get("token").asText());
@@ -108,6 +104,5 @@ public class HTTPService implements Function<HTTPServiceRequest, Map<String, Obj
 		default:
 			LOGGER.warn("Unknow auth type encountered. Setting nothing to headers.");
 		}
-		return headers;
 	}
 }

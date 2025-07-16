@@ -7,32 +7,35 @@
 			"port": "5672",
 			"username": "guest",
 			"password": "guest",
-			"virtualHost":"/"
+			"virtualHost": "/"
 		},
 		"queue": "input-101",
 		"exchange": "amq.topic"
 	},
-	"action":{
+	"action": {
 		"auth": {
 			"host": "localhost",
 			"port": "5672",
 			"username": "guest",
 			"password": "guest",
-			"virtualHost":"/"
+			"virtualHost": "/"
 		},
 		"queue": "input-102",
 		"exchange": "amq.topic"
 	},
-	"filter": [
-		[
+	"filter": {
+		"OR": [
 			{
-				"f1": ""
+				"field": "name",
+				"operation": "equals",
+				"value": "vipin"
 			},
 			{
-				"f2": ""
+				"field": "lastName",
+				"operation": "equals",
+				"value": "sati"
 			}
-		],
-		[]
-	],
+		]
+	},
 	"transformer": {}
 }

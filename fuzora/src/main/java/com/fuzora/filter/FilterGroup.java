@@ -1,22 +1,28 @@
 package com.fuzora.filter;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 
-//FilterGroup.java
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class FilterGroup implements FilterNode {
- public enum Type { AND, OR }
+    public enum Type { AND, OR }
 
- public Type type;
- public List<FilterNode> filters;
+    protected Type type;
+    protected List<FilterNode> filters;
 
- @Override
- public boolean evaluate(JsonNode data) {
-     if (type == Type.AND) {
-         return filters.stream().allMatch(f -> f.evaluate(data));
-     } else {
-         return filters.stream().anyMatch(f -> f.evaluate(data));
-     }
- }
+    @Override
+    public FilterResult evaluate(JsonNode data) {
+        if (type == Type.AND) {
+            for (FilterNode node : filters) {
+                FilterResult result = node.evaluate(data);
+                if (!result.isSuccess()) return result; // Short-circuit failure
+            }
+            return FilterResult.success();
+        } else {
+            for (FilterNode node : filters) {
+                FilterResult result = node.evaluate(data);
+                if (result.isSuccess()) return FilterResult.success(); // Short-circuit success
+            }
+            return FilterResult.failed("None of the OR conditions passed.");
+        }
+    }
 }

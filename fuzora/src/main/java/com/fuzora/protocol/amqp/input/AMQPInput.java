@@ -1,59 +1,56 @@
 package com.fuzora.protocol.amqp.input;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import com.fuzora.workflow.Pipeline;
+import com.fuzora.pipeline.PipelineRunner;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
+import java.nio.charset.StandardCharsets;
 
-@Service("amqp_input")
-public class AMQPInput implements Supplier<Map<String, Object>> {
+@Component("amqp_input")
+public class AMQPInput implements BooleanSupplier {
 
-	@Autowired
-	AMQPInputConfig amqpInputConfig;
+	private PipelineRunner pipelineRunner;
 
-	@Autowired
-	Pipeline<Map<String, Object>, Map<String, Object>> pipeline;
+	private AMQPInputConfig amqpInputConfig;
 
-	private void startListening() throws IOException {
-		ConnectionFactory factory = amqpInputConfig.getRabbitMQService().getConnectionFactory();
-		Connection connection = factory.createConnection();
-		Channel channel = connection.createChannel(false);
-
-		channel.exchangeDeclare(amqpInputConfig.getExchange(), "topic", true);
-		String queueName = amqpInputConfig.getQueue();
-		channel.queueBind(amqpInputConfig.getQueue(), amqpInputConfig.getExchange(), "");
-
-		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-			String message = new String(delivery.getBody(), "UTF-8");
-
-			Map<String, Object> ret = new HashMap<>();
-			ret.put("body", message);
-			if (!message.isEmpty())
-				pipeline.startPipeline(ret);
-		};
-		channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
-		});
+	public AMQPInput(PipelineRunner pipelineRunner, AMQPInputConfig amqpInputConfig) {
+		this.pipelineRunner = pipelineRunner;
+		this.amqpInputConfig = amqpInputConfig;
 	}
 
 	@Override
-	public Map<String, Object> get() {
-		try {
-			startListening();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public boolean getAsBoolean() {
+		ConnectionFactory factory = amqpInputConfig.getRabbitMQService().getConnectionFactory();
+		try (Connection connection = factory.createConnection(); Channel channel = connection.createChannel(false);) {
+
+			channel.exchangeDeclare(amqpInputConfig.getExchange(), "topic", true);
+
+			String queueName = amqpInputConfig.getQueue();
+			channel.queueDeclare(queueName, true, false, false, null);
+
+			channel.queueBind(amqpInputConfig.getQueue(), amqpInputConfig.getExchange(), "");
+
+			DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+				String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+
+				Map<String, Object> ret = new HashMap<>();
+				ret.put("body", message);
+				if (!message.isEmpty())
+					pipelineRunner.runPipeline(message);
+			};
+			channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
+			});
+
+		} catch (Exception e) {
+
 		}
-		Map<String, Object> retVal = new HashMap<>();
-		retVal.put("status", "ok");
-		return retVal;
+		return true;
 	}
 }
